@@ -12,7 +12,7 @@ paxs() {
 
   # Yay search
   echo -e "\n${HIGHLIGHT_COLOR}Yay search:${NO_COLOR}"
-  yay -F $SEARCH_TERM
+  yay -Ss $SEARCH_TERM
 
   # Flatpak search
   echo -e "\n${HIGHLIGHT_COLOR}Flatpak search:${NO_COLOR}"
