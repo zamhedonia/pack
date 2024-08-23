@@ -6,7 +6,7 @@
 
 ### Installation
 Requirements:
-yay, flatpak, snap
+yay, flatpak, snapd
 
 1. Download the script:
    ```bash
