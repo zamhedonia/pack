@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# Function for searching in Yay, Flatpak, and Snap
+paxs() {
+  SEARCH_TERM=$1
+
+  # Definition of highlight color
+  HIGHLIGHT_COLOR='\033[0;32m'
+  NO_COLOR='\033[0m'
+
+  echo "Searching for '$SEARCH_TERM' in Yay, Flatpak, and Snap..."
+
+  # Yay search
+  echo -e "\n${HIGHLIGHT_COLOR}Yay search:${NO_COLOR}"
+  yay -F $SEARCH_TERM
+
+  # Flatpak search
+  echo -e "\n${HIGHLIGHT_COLOR}Flatpak search:${NO_COLOR}"
+  flatpak search $SEARCH_TERM
+
+  # Snap search
+  echo -e "\n${HIGHLIGHT_COLOR}Snap search:${NO_COLOR}"
+  snap search $SEARCH_TERM
+
+  # Special output for "moo"
+  if [[ $SEARCH_TERM == "moo" ]]; then
+    echo -e "\n    Mooo...
+    \  ____/
+      \|   ^ ^
+          (oo )
+        (___) \______   *
+          |          \ /
+          |_  _____  |V
+          || |    || |"
+  fi
+}
+
+# Check if '-h' is used
+if [[ $1 == "-h" ]]; then
+  echo "NAME"
+  echo "    paxs - search for a package in Yay, Flatpak, and Snap"
+  echo ""
+  echo "SYNOPSIS"
+  echo "    paxs <search_term>"
+  echo ""
+  echo "DESCRIPTION"
+  echo "    The paxs command searches for the specified package across the following package managers:"
+  echo "        - Yay (AUR)"
+  echo "        - Flatpak"
+  echo "        - Snap"
+  echo ""
+  echo "USAGE"
+  echo "    paxs <search_term>"
+  echo "        Perform a search for the provided search term (e.g., paxs firefox, paxs gparted)."
+  echo ""
+  echo "    paxs -h"
+  echo "        Display this help manual for the paxs command."
+else
+  # Execute the paxs function with the search term
+  if [[ ! -z "$1" ]]; then
+    paxs $1
+  else
+    echo "Usage: paxs <search_term> or paxs -h"
+  fi
+fi
