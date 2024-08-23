@@ -67,7 +67,7 @@ firefox (v89.0) mozilla - Firefox Web Browser
 ### What it's doing
 
 The program directly executes these commands:
-- yay -F $SEARCH_TERM
+- yay -Ss $SEARCH_TERM
 - flatpak search $SEARCH_TERM
 - snap search $SEARCH_TERM
 
