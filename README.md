@@ -5,6 +5,8 @@
  It streamlines the process of finding packages across multiple package formats with a single command.
 
 ### Installation
+Requirements:
+yay, flatpak, snap
 
 1. Download the script:
    ```bash
@@ -61,6 +63,13 @@ firefox stable flathub org.mozilla.firefox
 Snap search:
 firefox (v89.0) mozilla - Firefox Web Browser
 ```
+
+### What it's doing
+
+The program directly executes these commands:
+- yay -F $SEARCH_TERM
+- flatpak search $SEARCH_TERM
+- snap search $SEARCH_TERM
 
 ### Help
 
