@@ -138,10 +138,77 @@ interactive_install() {
   esac
 }
 
+
+# Function for removing a package with Yay
+remove_yay() {
+  PACKAGE_NAME=$1
+  echo -e "${HIGHLIGHT_COLOR}Attempting to remove package '$PACKAGE_NAME' with Yay:${NO_COLOR}"
+  yay -R "$PACKAGE_NAME"
+}
+
+# Function for removing a package with Flatpak
+remove_flatpak() {
+  PACKAGE_NAME=$1
+  echo -e "${HIGHLIGHT_COLOR}Attempting to remove package '$PACKAGE_NAME' with Flatpak:${NO_COLOR}"
+  flatpak remove "$PACKAGE_NAME"
+}
+
+# Function for removing a package with Snap
+remove_snap() {
+  PACKAGE_NAME=$1
+  echo -e "${HIGHLIGHT_COLOR}Attempting to remove package '$PACKAGE_NAME' with Snap:${NO_COLOR}"
+  sudo snap remove "$PACKAGE_NAME"
+}
+
+# Function for interactive removal based on user input
+interactive_remove() {
+  PACKAGE_NAME=$1
+
+  echo -e "Interactive remove:"
+
+  # Perform the package existence check first
+  echo -e "Checking for installed package '$PACKAGE_NAME' in package managers..."
+
+  # Yay check
+  echo -e "\n${HIGHLIGHT_COLOR}Yay check:${NO_COLOR}"
+  yay -F "$PACKAGE_NAME"
+
+  # Flatpak check
+  echo -e "\n${HIGHLIGHT_COLOR}Flatpak check:${NO_COLOR}"
+  flatpak list | grep "$PACKAGE_NAME"
+
+  # Snap check
+  echo -e "\n${HIGHLIGHT_COLOR}Snap check:${NO_COLOR}"
+  snap list | grep "$PACKAGE_NAME"
+
+  # Prompt user to choose the source for removal
+  echo -e "\n"
+  read -p "Remove from which source [y/f/s/n or yay/flatpak/snap/none] (yay, flatpak, snap or none): " source_choice
+
+  case "$source_choice" in
+    y|yay)
+      remove_yay "$PACKAGE_NAME"
+      ;;
+    f|flatpak)
+      remove_flatpak "$PACKAGE_NAME"
+      ;;
+    s|snap)
+      remove_snap "$PACKAGE_NAME"
+      ;;
+    n|none)
+      echo "Removal aborted by user."
+      ;;
+    *)
+      echo "Unknown source selected. Exiting..."
+      exit 1
+      ;;
+  esac
+}
+
 # Display help message
 show_help() {
   echo -e "${HIGHLIGHT_COLOR}NAME${NO_COLOR}"
-  echo "    paxs - search for a package, check for updates, or upgrade packages in Yay, Flatpak, and Snap"
+  echo "    paxs - search for a package, check for updates, install or remove packages in Yay, Flatpak, and Snap"
   echo ""
   echo -e "${HIGHLIGHT_COLOR}SYNOPSIS${NO_COLOR}"
   echo "    paxs <search_term>"
@@ -168,11 +235,15 @@ show_help() {
   echo "    The '-iy <package-name>' or '--install-yay <package-name>' option installs the specified package using Yay."
   echo "    The '-if <package-name>' or '--install-flatpak <package-name>' option installs the specified package using Flatpak."
   echo "    The '-is <package-name>' or '--install-snap <package-name>' option installs the specified package using Snap."
+  echo "    paxs -r <package-name>, paxs --remove <package-name>"
+  echo "    paxs -ry <package-name>, paxs --remove-yay <package-name>"
+  echo "    paxs -rf <package-name>, paxs --remove-flatpak <package-name>"
+  echo "    paxs -rs <package-name>, paxs --remove-snap <package-name>"
   echo "    The '-h' or '--help' option displays this help manual."
 }
 
 # Check options and arguments
-valid_flags=("-h" "--help" "-c" "--check-update" "-u" "--upgrade-all" "-uy" "--upgrade-yay" "-uf" "--upgrade-flatpak" "-us" "--upgrade-snap" "-i" "--install" "-iy" "--install-yay" "-if" "--install-flatpak" "-is" "--install-snap")
+valid_flags=("-h" "--help" "-c" "--check-update" "-u" "--upgrade-all" "-uy" "--upgrade-yay" "-uf" "--upgrade-flatpak" "-us" "--upgrade-snap" "-i" "--install" "-iy" "--install-yay" "-if" "--install-flatpak" "-is" "--install-snap" "-r" "--remove" "-ry" "--remove-yay" "-rf" "--remove-flatpak" "-rs" "--remove-snap")
 
 # Check for any unknown flags
 for arg in "$@"; do
@@ -193,15 +264,6 @@ case $1 in
     ;;
   -u|--upgrade-all)
     upgrade_all
-    ;;
-  -uy|--upgrade-yay)
-    upgrade_yay
-    ;;
-  -uf|--upgrade-flatpak)
-    upgrade_flatpak
-    ;;
-  -us|--upgrade-snap)
-    upgrade_snap
     ;;
   -i|--install)
     if [[ ! -z "$2" ]]; then
@@ -229,6 +291,34 @@ case $1 in
       install_snap "$2"
     else
       echo "Usage: -is <package-name> or --install-snap <package-name>"
+    fi
+    ;;
+  -r|--remove)
+    if [[ ! -z "$2" ]]; then
+      interactive_remove "$2"
+    else
+      echo "Usage: -r <package-name> or --remove <package-name>"
+    fi
+    ;;
+  -ry|--remove-yay)
+    if [[ ! -z "$2" ]]; then
+      remove_yay "$2"
+    else
+      echo "Usage: -ry <package-name> or --remove-yay <package-name>"
+    fi
+    ;;
+  -rf|--remove-flatpak)
+    if [[ ! -z "$2" ]]; then
+      remove_flatpak "$2"
+    else
+      echo "Usage: -rf <package-name> or --remove-flatpak <package-name>"
+    fi
+    ;;
+  -rs|--remove-snap)
+    if [[ ! -z "$2" ]]; then
+      remove_snap "$2"
+    else
+      echo "Usage: -rs <package-name> or --remove-snap <package-name>"
     fi
     ;;
   *)
