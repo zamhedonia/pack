@@ -1,12 +1,12 @@
 #!/bin/bash
 
+# Global definition of highlight color
+HIGHLIGHT_COLOR='\033[0;32m'
+NO_COLOR='\033[0m'
+
 # Function for searching in Yay, Flatpak, and Snap
 paxs() {
   SEARCH_TERM=$1
-
-  # Definition of highlight color
-  HIGHLIGHT_COLOR='\033[0;32m'
-  NO_COLOR='\033[0m'
 
   echo "Searching for '$SEARCH_TERM' in Yay, Flatpak, and Snap..."
 
@@ -35,13 +35,31 @@ paxs() {
   fi
 }
 
-# Check if '-h' is used
+# Function for checking updates
+check_updates() {
+  echo -e "Checking for updates..."
+
+  # Yay updates
+  echo -e "\n${HIGHLIGHT_COLOR}Yay updates:${NO_COLOR}"
+  yay -Qua
+
+  # Flatpak updates
+  echo -e "\n${HIGHLIGHT_COLOR}Flatpak updates:${NO_COLOR}"
+  flatpak remote-ls --updates
+
+  # Snap updates
+  echo -e "\n${HIGHLIGHT_COLOR}Snap updates:${NO_COLOR}"
+  snap refresh --list
+}
+
+# Check options and arguments
 if [[ $1 == "-h" ]]; then
   echo "NAME"
-  echo "    paxs - search for a package in Yay, Flatpak, and Snap"
+  echo "    paxs - search for a package or check for updates in Yay, Flatpak, and Snap"
   echo ""
   echo "SYNOPSIS"
   echo "    paxs <search_term>"
+  echo "    paxs -c"
   echo ""
   echo "DESCRIPTION"
   echo "    The paxs command searches for the specified package across the following package managers:"
@@ -49,17 +67,24 @@ if [[ $1 == "-h" ]]; then
   echo "        - Flatpak"
   echo "        - Snap"
   echo ""
+  echo "    The '-c' option checks for updates across the package managers."
+  echo ""
   echo "USAGE"
   echo "    paxs <search_term>"
   echo "        Perform a search for the provided search term (e.g., paxs firefox, paxs gparted)."
   echo ""
+  echo "    paxs -c"
+  echo "        Check for updates across Yay, Flatpak, and Snap."
+  echo ""
   echo "    paxs -h"
   echo "        Display this help manual for the paxs command."
+elif [[ $1 == "-c" ]]; then
+  check_updates
 else
   # Execute the paxs function with the search term
   if [[ ! -z "$1" ]]; then
     paxs $1
   else
-    echo "Usage: paxs <search_term> or paxs -h"
+    echo "Usage: paxs <search_term>, paxs -c, or paxs -h"
   fi
 fi
