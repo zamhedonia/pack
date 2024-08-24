@@ -1,50 +1,104 @@
 ## paxs
 
-`paxs` is a simple and convenient Bash script for searching packages across three different package managers: Yay (AUR), Flatpak, and Snap.
+`paxs` is a convenient Bash script for searching and managing packages across three different package managers: Yay (Arch Repository + AUR), Flatpak, and Snap.
 
- It streamlines the process of finding packages across multiple package formats with a single command.
+It streamlines the process of finding and upgrading packages across multiple package formats with a single command.
 
 ### Installation
-Requirements:
-yay, flatpak, snapd
+**Dependencies:** yay, flatpak, snapd
 
-1. Download the script:
+1. **Download the script:**
    ```bash
    git clone https://github.com/zamhedonia/paxs.git
    ```
    
-2. Open the directory:
+2. **Open the directory:**
    ```bash
    cd ~/paxs
    ```
    
-3. Make it executable:
+3. **Make it executable:**
    ```bash
    chmod +x paxs
    ```
 
-4. Move the script to a directory in your `$PATH` (e.g., `/usr/local/bin`):
+4. **Move the script to a directory in your `$PATH` (e.g., `/usr/local/bin`):**
    ```bash
    sudo mv paxs /usr/local/bin/paxs
    ```
 
-5. Now you can use `paxs` from anywhere in your terminal!
+5. **Now you can use `paxs` from anywhere in your terminal!**
 
 ### Usage
 
-To search for a package, simply type `paxs <search_term>`.
+- **Search for a package:**
+  ```bash
+  paxs <search_term>
+  ```
+  For example:
+  ```bash
+  paxs firefox
+  ```
+  This command will search for the package "firefox" in:
+  - Yay (Arch Repository and Arch User Repository)
+  - Flatpak
+  - Snap
 
-For example:
-```bash
-paxs firefox
-```
+  You'll receive the results from each package manager, one after the other.
 
-This command will search for the package "firefox" in:
-- Yay (Arch Repository and Arch User Repository)
-- Flatpak
-- Snap
+- **Check for updates across Yay, Flatpak, and Snap:**
+  ```bash
+  paxs -c
+  ```
+  or
+  ```bash
+  paxs --check-upgrade
+  ```
 
-You'll receive the results from each package manager, one after the other.
+- **Upgrade all packages across Yay, Flatpak, and Snap:**
+  ```bash
+  paxs -u
+  ```
+  or
+  ```bash
+  paxs --upgrade-all
+  ```
+
+- **Upgrade only Yay packages:**
+  ```bash
+  paxs -uy
+  ```
+  or
+  ```bash
+  paxs --upgrade-yay
+  ```
+
+- **Upgrade only Flatpak packages:**
+  ```bash
+  paxs -uf
+  ```
+  or
+  ```bash
+  paxs --upgrade-flatpak
+  ```
+
+- **Upgrade only Snap packages:**
+  ```bash
+  paxs -us
+  ```
+  or
+  ```bash
+  paxs --upgrade-snap
+  ```
+
+- **Display the help manual:**
+  ```bash
+  paxs -h
+  ```
+  or
+  ```bash
+  paxs --help
+  ```
 
 ### Example Output
 
@@ -64,23 +118,6 @@ Snap search:
 firefox (v89.0) mozilla - Firefox Web Browser
 ```
 
-### What it's doing
+### Implementation
 
-The program directly executes these commands:
-- yay -Ss $SEARCH_TERM
-- flatpak search $SEARCH_TERM
-- snap search $SEARCH_TERM
-
-### Help
-
-For help or usage instructions, use the `-h` option:
-```bash
-paxs -h
-```
-
-
---------
-
-```bash
-paxs moo
-```
+The program directly executes yay, flatpak and snapd commands.
