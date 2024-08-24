@@ -52,7 +52,7 @@ It streamlines the process of finding and upgrading packages across multiple pac
   ```
   or
   ```bash
-  paxs --check-upgrade
+  paxs --check-update
   ```
 
 - **Upgrade all packages across Yay, Flatpak, and Snap:**
