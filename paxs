@@ -105,6 +105,39 @@ install_snap() {
   sudo snap install "$PACKAGE_NAME"
 }
 
+# Function for interactive installation based on user input
+interactive_install() {
+  PACKAGE_NAME=$1
+
+  echo -e "Interactive install:"
+
+  # Perform the search first
+  paxs "$PACKAGE_NAME"
+
+  # Prompt user to choose the source for installation
+  echo -e "\n"
+  read -p "Install from which source [y/f/s/n] (yay, flatpak, snap or none): " source_choice
+
+  case "$source_choice" in
+    y|yay)
+      install_yay "$PACKAGE_NAME"
+      ;;
+    f|flatpak)
+      install_flatpak "$PACKAGE_NAME"
+      ;;
+    s|snap)
+      install_snap "$PACKAGE_NAME"
+      ;;
+    n|none)
+      echo "Installation aborted by user."
+      ;;
+    *)
+      echo "Unknown source selected. Exiting..."
+      exit 1
+      ;;
+  esac
+}
+
 # Display help message
 show_help() {
   echo -e "${HIGHLIGHT_COLOR}NAME${NO_COLOR}"
@@ -117,6 +150,7 @@ show_help() {
   echo "    paxs -uy, paxs --upgrade-yay"
   echo "    paxs -uf, paxs --upgrade-flatpak"
   echo "    paxs -us, paxs --upgrade-snap"
+  echo "    paxs -i <package-name>, paxs --install <package-name>"
   echo "    paxs -iy <package-name>, paxs --install-yay <package-name>"
   echo "    paxs -if <package-name>, paxs --install-flatpak <package-name>"
   echo "    paxs -is <package-name>, paxs --install-snap <package-name>"
@@ -130,48 +164,15 @@ show_help() {
   echo ""
   echo "    The '-c' or '--check-update' option checks for updates across the package managers."
   echo "    The '-u' or '--upgrade-all' option upgrades all packages across the package managers."
-  echo "    The '-uy' or '--upgrade-yay' option upgrades only Yay packages."
-  echo "    The '-uf' or '--upgrade-flatpak' option upgrades only Flatpak packages."
-  echo "    The '-us' or '--upgrade-snap' option upgrades only Snap packages."
+  echo "    The '-i <package-name>' or '--install <package-name>' option searches for the package and prompts the user to select a source for installation."
   echo "    The '-iy <package-name>' or '--install-yay <package-name>' option installs the specified package using Yay."
   echo "    The '-if <package-name>' or '--install-flatpak <package-name>' option installs the specified package using Flatpak."
   echo "    The '-is <package-name>' or '--install-snap <package-name>' option installs the specified package using Snap."
   echo "    The '-h' or '--help' option displays this help manual."
-  echo ""
-  echo -e "${HIGHLIGHT_COLOR}USAGE${NO_COLOR}"
-  echo "    paxs <search_term>"
-  echo "        Perform a search for the provided search term (e.g., paxs firefox, paxs gparted)."
-  echo ""
-  echo "    paxs -c, paxs --check-update"
-  echo "        Check for updates across Yay, Flatpak, and Snap."
-  echo ""
-  echo "    paxs -u, paxs --upgrade-all"
-  echo "        Attempt to upgrade all packages across Yay, Flatpak, and Snap in that order."
-  echo ""
-  echo "    paxs -uy, paxs --upgrade-yay"
-  echo "        Attempt to upgrade only Yay packages."
-  echo ""
-  echo "    paxs -uf, paxs --upgrade-flatpak"
-  echo "        Attempt to upgrade only Flatpak packages."
-  echo ""
-  echo "    paxs -us, paxs --upgrade-snap"
-  echo "        Attempt to upgrade only Snap packages."
-  echo ""
-  echo "    paxs -iy <package-name>, paxs --install-yay <package-name>"
-  echo "        Install the specified package using Yay."
-  echo ""
-  echo "    paxs -if <package-name>, paxs --install-flatpak <package-name>"
-  echo "        Install the specified package using Flatpak."
-  echo ""
-  echo "    paxs -is <package-name>, paxs --install-snap <package-name>"
-  echo "        Install the specified package using Snap."
-  echo ""
-  echo "    paxs -h, paxs --help"
-  echo "        Display this help manual for the paxs command."
 }
 
 # Check options and arguments
-valid_flags=("-h" "--help" "-c" "--check-update" "-u" "--upgrade-all" "-uy" "--upgrade-yay" "-uf" "--upgrade-flatpak" "-us" "--upgrade-snap" "-iy" "--install-yay" "-if" "--install-flatpak" "-is" "--install-snap")
+valid_flags=("-h" "--help" "-c" "--check-update" "-u" "--upgrade-all" "-uy" "--upgrade-yay" "-uf" "--upgrade-flatpak" "-us" "--upgrade-snap" "-i" "--install" "-iy" "--install-yay" "-if" "--install-flatpak" "-is" "--install-snap")
 
 # Check for any unknown flags
 for arg in "$@"; do
@@ -201,6 +202,13 @@ case $1 in
     ;;
   -us|--upgrade-snap)
     upgrade_snap
+    ;;
+  -i|--install)
+    if [[ ! -z "$2" ]]; then
+      interactive_install "$2"
+    else
+      echo "Usage: -i <package-name> or --install <package-name>"
+    fi
     ;;
   -iy|--install-yay)
     if [[ ! -z "$2" ]]; then
