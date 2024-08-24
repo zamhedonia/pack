@@ -52,14 +52,33 @@ check_updates() {
   snap refresh --list
 }
 
+# Function for upgrading all packages
+upgrade_all() {
+  echo -e "Attempting to upgrade all packages..."
+  echo -e "You may need to make multiple selections during the process."
+
+  # Yay upgrade
+  echo -e "\n${HIGHLIGHT_COLOR}Attempting to upgrade Yay packages:${NO_COLOR}"
+  yay -Syu
+
+  # Flatpak upgrade
+  echo -e "\n${HIGHLIGHT_COLOR}Attempting to upgrade Flatpak packages:${NO_COLOR}"
+  flatpak update
+
+  # Snap upgrade
+  echo -e "\n${HIGHLIGHT_COLOR}Attempting to upgrade Snap packages:${NO_COLOR}"
+  sudo snap refresh
+}
+
 # Check options and arguments
 if [[ $1 == "-h" ]]; then
   echo "NAME"
-  echo "    paxs - search for a package or check for updates in Yay, Flatpak, and Snap"
+  echo "    paxs - search for a package, check for updates, or upgrade all packages in Yay, Flatpak, and Snap"
   echo ""
   echo "SYNOPSIS"
   echo "    paxs <search_term>"
   echo "    paxs -c"
+  echo "    paxs -u"
   echo ""
   echo "DESCRIPTION"
   echo "    The paxs command searches for the specified package across the following package managers:"
@@ -68,6 +87,7 @@ if [[ $1 == "-h" ]]; then
   echo "        - Snap"
   echo ""
   echo "    The '-c' option checks for updates across the package managers."
+  echo "    The '-u' option upgrades all packages across the package managers."
   echo ""
   echo "USAGE"
   echo "    paxs <search_term>"
@@ -76,15 +96,22 @@ if [[ $1 == "-h" ]]; then
   echo "    paxs -c"
   echo "        Check for updates across Yay, Flatpak, and Snap."
   echo ""
+  echo "    paxs -u"
+  echo "        Attempt to upgrade all packages across Yay, Flatpak, and Snap in that order."
+  echo ""
   echo "    paxs -h"
   echo "        Display this help manual for the paxs command."
+  echo ""
+  echo "    Keep in mind that paxs only processes the first argument."
 elif [[ $1 == "-c" ]]; then
   check_updates
+elif [[ $1 == "-u" ]]; then
+  upgrade_all
 else
   # Execute the paxs function with the search term
   if [[ ! -z "$1" ]]; then
     paxs $1
   else
-    echo "Usage: paxs <search_term>, paxs -c, or paxs -h"
+    echo "Usage: paxs <search_term>, paxs -c, paxs -u, or paxs -h"
   fi
 fi
