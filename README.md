@@ -22,9 +22,9 @@ It streamlines the process of finding and upgrading packages across multiple pac
    chmod +x paxs
    ```
 
-4. **Move the script to a directory in your `$PATH` (e.g., `/usr/local/bin`):**
+4. **Copy the script to a directory in your `$PATH` (e.g., `/usr/local/bin`):**
    ```bash
-   sudo mv paxs /usr/local/bin/paxs
+   sudo cp paxs /usr/local/bin/paxs
    ```
 
 5. **Now you can use `paxs` from anywhere in your terminal!**
