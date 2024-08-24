@@ -52,33 +52,48 @@ check_updates() {
   snap refresh --list
 }
 
+# Function for upgrading Yay packages
+upgrade_yay() {
+  echo -e "\n${HIGHLIGHT_COLOR}Attempting to upgrade Yay packages:${NO_COLOR}"
+  yay -Syu
+}
+
+# Function for upgrading Flatpak packages
+upgrade_flatpak() {
+  echo -e "\n${HIGHLIGHT_COLOR}Attempting to upgrade Flatpak packages:${NO_COLOR}"
+  flatpak update
+}
+
+# Function for upgrading Snap packages
+upgrade_snap() {
+  echo -e "\n${HIGHLIGHT_COLOR}Attempting to upgrade Snap packages:${NO_COLOR}"
+  sudo snap refresh
+}
+
 # Function for upgrading all packages
 upgrade_all() {
   echo -e "Attempting to upgrade all packages..."
   echo -e "You may need to make multiple selections during the process."
 
-  # Yay upgrade
-  echo -e "\n${HIGHLIGHT_COLOR}Attempting to upgrade Yay packages:${NO_COLOR}"
-  yay -Syu
-
-  # Flatpak upgrade
-  echo -e "\n${HIGHLIGHT_COLOR}Attempting to upgrade Flatpak packages:${NO_COLOR}"
-  flatpak update
-
-  # Snap upgrade
-  echo -e "\n${HIGHLIGHT_COLOR}Attempting to upgrade Snap packages:${NO_COLOR}"
-  sudo snap refresh
+  # Call individual upgrade functions
+  upgrade_yay
+  upgrade_flatpak
+  upgrade_snap
 }
 
-# Check options and arguments
-if [[ $1 == "-h" ]]; then
+# Display help message
+show_help() {
   echo "NAME"
-  echo "    paxs - search for a package, check for updates, or upgrade all packages in Yay, Flatpak, and Snap"
+  echo "    paxs - search for a package, check for updates, or upgrade packages in Yay, Flatpak, and Snap"
   echo ""
   echo "SYNOPSIS"
   echo "    paxs <search_term>"
-  echo "    paxs -c"
-  echo "    paxs -u"
+  echo "    paxs -c, paxs --check-upgrade"
+  echo "    paxs -u, paxs --upgrade-all"
+  echo "    paxs -uy, paxs --upgrade-yay"
+  echo "    paxs -uf, paxs --upgrade-flatpak"
+  echo "    paxs -us, paxs --upgrade-snap"
+  echo "    paxs -h, paxs --help"
   echo ""
   echo "DESCRIPTION"
   echo "    The paxs command searches for the specified package across the following package managers:"
@@ -86,32 +101,64 @@ if [[ $1 == "-h" ]]; then
   echo "        - Flatpak"
   echo "        - Snap"
   echo ""
-  echo "    The '-c' option checks for updates across the package managers."
-  echo "    The '-u' option upgrades all packages across the package managers."
+  echo "    The '-c' or '--check-upgrade' option checks for updates across the package managers."
+  echo "    The '-u' or '--upgrade-all' option upgrades all packages across the package managers."
+  echo "    The '-uy' or '--upgrade-yay' option upgrades only Yay packages."
+  echo "    The '-uf' or '--upgrade-flatpak' option upgrades only Flatpak packages."
+  echo "    The '-us' or '--upgrade-snap' option upgrades only Snap packages."
+  echo "    The '-h' or '--help' option displays this help manual."
   echo ""
   echo "USAGE"
   echo "    paxs <search_term>"
   echo "        Perform a search for the provided search term (e.g., paxs firefox, paxs gparted)."
   echo ""
-  echo "    paxs -c"
+  echo "    paxs -c, paxs --check-upgrade"
   echo "        Check for updates across Yay, Flatpak, and Snap."
   echo ""
-  echo "    paxs -u"
+  echo "    paxs -u, paxs --upgrade-all"
   echo "        Attempt to upgrade all packages across Yay, Flatpak, and Snap in that order."
   echo ""
-  echo "    paxs -h"
+  echo "    paxs -uy, paxs --upgrade-yay"
+  echo "        Attempt to upgrade only Yay packages."
+  echo ""
+  echo "    paxs -uf, paxs --upgrade-flatpak"
+  echo "        Attempt to upgrade only Flatpak packages."
+  echo ""
+  echo "    paxs -us, paxs --upgrade-snap"
+  echo "        Attempt to upgrade only Snap packages."
+  echo ""
+  echo "    paxs -h, paxs --help"
   echo "        Display this help manual for the paxs command."
   echo ""
   echo "    Keep in mind that paxs only processes the first argument."
-elif [[ $1 == "-c" ]]; then
-  check_updates
-elif [[ $1 == "-u" ]]; then
-  upgrade_all
-else
-  # Execute the paxs function with the search term
-  if [[ ! -z "$1" ]]; then
-    paxs $1
-  else
-    echo "Usage: paxs <search_term>, paxs -c, paxs -u, or paxs -h"
-  fi
-fi
+}
+
+# Check options and arguments
+case $1 in
+  -h|--help)
+    show_help
+    ;;
+  -c|--check-upgrade)
+    check_updates
+    ;;
+  -u|--upgrade-all)
+    upgrade_all
+    ;;
+  -uy|--upgrade-yay)
+    upgrade_yay
+    ;;
+  -uf|--upgrade-flatpak)
+    upgrade_flatpak
+    ;;
+  -us|--upgrade-snap)
+    upgrade_snap
+    ;;
+  *)
+    # Execute the paxs function with the search term
+    if [[ ! -z "$1" ]]; then
+      paxs $1
+    else
+      echo "Usage: paxs <search_term>, paxs -c, paxs -u, paxs -uy, paxs -uf, paxs -us, or paxs -h"
+    fi
+    ;;
+esac
