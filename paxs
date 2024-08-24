@@ -4,6 +4,9 @@
 HIGHLIGHT_COLOR='\033[0;32m'
 NO_COLOR='\033[0m'
 
+# Define usage message
+USAGE_MESSAGE="Usage: paxs <search_term> or paxs -h to see more options."
+
 # Function for searching in Yay, Flatpak, and Snap
 paxs() {
   SEARCH_TERM=$1
@@ -12,15 +15,15 @@ paxs() {
 
   # Yay search
   echo -e "\n${HIGHLIGHT_COLOR}Yay search:${NO_COLOR}"
-  yay -Ss $SEARCH_TERM
+  yay -Ss "$SEARCH_TERM"
 
   # Flatpak search
   echo -e "\n${HIGHLIGHT_COLOR}Flatpak search:${NO_COLOR}"
-  flatpak search $SEARCH_TERM
+  flatpak search "$SEARCH_TERM"
 
   # Snap search
   echo -e "\n${HIGHLIGHT_COLOR}Snap search:${NO_COLOR}"
-  snap search $SEARCH_TERM
+  snap search "$SEARCH_TERM"
 
   # Special output for "moo"
   if [[ $SEARCH_TERM == "moo" ]]; then
@@ -81,21 +84,45 @@ upgrade_all() {
   upgrade_snap
 }
 
+# Function for installing a package with Yay
+install_yay() {
+  PACKAGE_NAME=$1
+  echo -e "${HIGHLIGHT_COLOR}Attempting to install package '$PACKAGE_NAME' with Yay:${NO_COLOR}"
+  yay -S "$PACKAGE_NAME"
+}
+
+# Function for installing a package with Flatpak
+install_flatpak() {
+  PACKAGE_NAME=$1
+  echo -e "${HIGHLIGHT_COLOR}Attempting to install package '$PACKAGE_NAME' with Flatpak:${NO_COLOR}"
+  flatpak install -y "$PACKAGE_NAME"
+}
+
+# Function for installing a package with Snap
+install_snap() {
+  PACKAGE_NAME=$1
+  echo -e "${HIGHLIGHT_COLOR}Attempting to install package '$PACKAGE_NAME' with Snap:${NO_COLOR}"
+  sudo snap install "$PACKAGE_NAME"
+}
+
 # Display help message
 show_help() {
-  echo "NAME"
+  echo -e "${HIGHLIGHT_COLOR}NAME${NO_COLOR}"
   echo "    paxs - search for a package, check for updates, or upgrade packages in Yay, Flatpak, and Snap"
   echo ""
-  echo "SYNOPSIS"
+  echo -e "${HIGHLIGHT_COLOR}SYNOPSIS${NO_COLOR}"
   echo "    paxs <search_term>"
   echo "    paxs -c, paxs --check-update"
   echo "    paxs -u, paxs --upgrade-all"
   echo "    paxs -uy, paxs --upgrade-yay"
   echo "    paxs -uf, paxs --upgrade-flatpak"
   echo "    paxs -us, paxs --upgrade-snap"
+  echo "    paxs -iy <package-name>, paxs --install-yay <package-name>"
+  echo "    paxs -if <package-name>, paxs --install-flatpak <package-name>"
+  echo "    paxs -is <package-name>, paxs --install-snap <package-name>"
   echo "    paxs -h, paxs --help"
   echo ""
-  echo "DESCRIPTION"
+  echo -e "${HIGHLIGHT_COLOR}DESCRIPTION${NO_COLOR}"
   echo "    The paxs command searches for the specified package across the following package managers:"
   echo "        - Yay (AUR)"
   echo "        - Flatpak"
@@ -106,9 +133,12 @@ show_help() {
   echo "    The '-uy' or '--upgrade-yay' option upgrades only Yay packages."
   echo "    The '-uf' or '--upgrade-flatpak' option upgrades only Flatpak packages."
   echo "    The '-us' or '--upgrade-snap' option upgrades only Snap packages."
+  echo "    The '-iy <package-name>' or '--install-yay <package-name>' option installs the specified package using Yay."
+  echo "    The '-if <package-name>' or '--install-flatpak <package-name>' option installs the specified package using Flatpak."
+  echo "    The '-is <package-name>' or '--install-snap <package-name>' option installs the specified package using Snap."
   echo "    The '-h' or '--help' option displays this help manual."
   echo ""
-  echo "USAGE"
+  echo -e "${HIGHLIGHT_COLOR}USAGE${NO_COLOR}"
   echo "    paxs <search_term>"
   echo "        Perform a search for the provided search term (e.g., paxs firefox, paxs gparted)."
   echo ""
@@ -127,13 +157,32 @@ show_help() {
   echo "    paxs -us, paxs --upgrade-snap"
   echo "        Attempt to upgrade only Snap packages."
   echo ""
+  echo "    paxs -iy <package-name>, paxs --install-yay <package-name>"
+  echo "        Install the specified package using Yay."
+  echo ""
+  echo "    paxs -if <package-name>, paxs --install-flatpak <package-name>"
+  echo "        Install the specified package using Flatpak."
+  echo ""
+  echo "    paxs -is <package-name>, paxs --install-snap <package-name>"
+  echo "        Install the specified package using Snap."
+  echo ""
   echo "    paxs -h, paxs --help"
   echo "        Display this help manual for the paxs command."
-  echo ""
-  echo "    Keep in mind that paxs only processes the first argument."
 }
 
 # Check options and arguments
+valid_flags=("-h" "--help" "-c" "--check-update" "-u" "--upgrade-all" "-uy" "--upgrade-yay" "-uf" "--upgrade-flatpak" "-us" "--upgrade-snap" "-iy" "--install-yay" "-if" "--install-flatpak" "-is" "--install-snap")
+
+# Check for any unknown flags
+for arg in "$@"; do
+  if [[ $arg == -* ]] && [[ ! " ${valid_flags[@]} " =~ " $arg " ]]; then
+    echo "Unknown flag '$arg'"
+    echo "$USAGE_MESSAGE"
+    exit 1
+  fi
+done
+
+# Process the first argument as the main command
 case $1 in
   -h|--help)
     show_help
@@ -153,12 +202,33 @@ case $1 in
   -us|--upgrade-snap)
     upgrade_snap
     ;;
-  *)
-    # Execute the paxs function with the search term
-    if [[ ! -z "$1" ]]; then
-      paxs $1
+  -iy|--install-yay)
+    if [[ ! -z "$2" ]]; then
+      install_yay "$2"
     else
-      echo "Usage: paxs <search_term>, paxs -c, paxs -u, paxs -uy, paxs -uf, paxs -us, or paxs -h"
+      echo "Usage: -iy <package-name> or --install-yay <package-name>"
+    fi
+    ;;
+  -if|--install-flatpak)
+    if [[ ! -z "$2" ]]; then
+      install_flatpak "$2"
+    else
+      echo "Usage: -if <package-name> or --install-flatpak <package-name>"
+    fi
+    ;;
+  -is|--install-snap)
+    if [[ ! -z "$2" ]]; then
+      install_snap "$2"
+    else
+      echo "Usage: -is <package-name> or --install-snap <package-name>"
+    fi
+    ;;
+  *)
+    if [[ -n "$1" ]]; then
+      paxs "$1"
+    else
+      echo "$USAGE_MESSAGE"
+      exit 1
     fi
     ;;
 esac
