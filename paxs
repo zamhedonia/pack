@@ -88,7 +88,7 @@ show_help() {
   echo ""
   echo "SYNOPSIS"
   echo "    paxs <search_term>"
-  echo "    paxs -c, paxs --check-upgrade"
+  echo "    paxs -c, paxs --check-update"
   echo "    paxs -u, paxs --upgrade-all"
   echo "    paxs -uy, paxs --upgrade-yay"
   echo "    paxs -uf, paxs --upgrade-flatpak"
@@ -101,7 +101,7 @@ show_help() {
   echo "        - Flatpak"
   echo "        - Snap"
   echo ""
-  echo "    The '-c' or '--check-upgrade' option checks for updates across the package managers."
+  echo "    The '-c' or '--check-update' option checks for updates across the package managers."
   echo "    The '-u' or '--upgrade-all' option upgrades all packages across the package managers."
   echo "    The '-uy' or '--upgrade-yay' option upgrades only Yay packages."
   echo "    The '-uf' or '--upgrade-flatpak' option upgrades only Flatpak packages."
@@ -112,7 +112,7 @@ show_help() {
   echo "    paxs <search_term>"
   echo "        Perform a search for the provided search term (e.g., paxs firefox, paxs gparted)."
   echo ""
-  echo "    paxs -c, paxs --check-upgrade"
+  echo "    paxs -c, paxs --check-update"
   echo "        Check for updates across Yay, Flatpak, and Snap."
   echo ""
   echo "    paxs -u, paxs --upgrade-all"
@@ -138,7 +138,7 @@ case $1 in
   -h|--help)
     show_help
     ;;
-  -c|--check-upgrade)
+  -c|--check-update)
     check_updates
     ;;
   -u|--upgrade-all)
