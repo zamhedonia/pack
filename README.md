@@ -1,6 +1,6 @@
 ## paxs
 
-`paxs` is a convenient Bash script for searching and managing packages across three different package managers: Yay (Arch Repository + AUR), Flatpak, and Snap.
+`paxs` is a convenient Bash script for searching and upgrading packages across three different package managers: Yay (Arch Repository + AUR), Flatpak, and Snap.
 
 It streamlines the process of finding and upgrading packages across multiple package formats with a single command.
 
