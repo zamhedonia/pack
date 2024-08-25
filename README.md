@@ -3,7 +3,8 @@
 
 It streamlines the process of finding, installing, removing, and upgrading packages across multiple package formats with a single command.
 
-![AUR Badge](https://img.shields.io/aur/version/paxs)
+<a href="https://aur.archlinux.org/packages/paxs" alt="AUR Badge">
+        <img src="https://img.shields.io/aur/version/paxs" /></a>
 
 ### Installation
 **Dependencies:** yay, flatpak, snapd
