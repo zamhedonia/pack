@@ -1,12 +1,19 @@
 ## paxs
-
 `paxs` is a convenient Bash script for searching, installing, removing, and upgrading packages across three different package managers: Yay (Arch Repository + AUR), Flatpak, and Snap.
 
 It streamlines the process of finding, installing, removing, and upgrading packages across multiple package formats with a single command.
 
+![AUR Badge](https://img.shields.io/aur/version/paxs)
+
 ### Installation
 **Dependencies:** yay, flatpak, snapd
 
+#### Install from the AUR
+   ```bash
+   yay -S paxs
+   ```
+
+#### Manual Installation:
 1. **Download the script:**
    ```bash
    git clone https://github.com/zamhedonia/paxs.git
@@ -17,17 +24,10 @@ It streamlines the process of finding, installing, removing, and upgrading packa
    cd ~/paxs
    ```
    
-3. **Make it executable:**
+3. **Install the package:**
    ```bash
-   chmod +x paxs
+   makepkg -si
    ```
-
-4. **Copy the script to a directory in your `$PATH` (e.g., `/usr/local/bin`):**
-   ```bash
-   sudo cp paxs /usr/local/bin/paxs
-   ```
-
-5. **Now you can use `paxs` from anywhere in your terminal!**
 
 ### Usage
 
@@ -118,6 +118,10 @@ It streamlines the process of finding, installing, removing, and upgrading packa
   or
   ```bash
   paxs --help
+  ```
+  or
+  ```bash
+  man paxs
   ```
 
 ### Example Output
