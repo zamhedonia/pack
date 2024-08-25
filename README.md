@@ -32,7 +32,7 @@ It streamlines the process of finding, installing, removing, and upgrading packa
 
 ### Usage
 
-- **Search for a package:**
+- 🔍 **Search for a package:**
   ```bash
   paxs <search_term>
   ```
@@ -47,7 +47,7 @@ It streamlines the process of finding, installing, removing, and upgrading packa
 
   You'll receive the results from each package manager, one after the other.
 
-- **Install a package:**
+- ⏬ **Install a package:**
   ```bash
   paxs -i <package_name>
   ```
@@ -66,7 +66,7 @@ It streamlines the process of finding, installing, removing, and upgrading packa
   paxs --install-yay <package_name>
   ```
   
-- **Remove a package:**
+- ❌ **Remove a package:**
   ```bash
   paxs -r <package_name>
   ```
@@ -85,7 +85,7 @@ It streamlines the process of finding, installing, removing, and upgrading packa
   paxs --remove-flatpak <package_name>
   ```
   
-- **Check for updates across Yay, Flatpak, and Snap:**
+- ↩️ **Check for updates across Yay, Flatpak, and Snap:**
   ```bash
   paxs -c
   ```
@@ -94,7 +94,7 @@ It streamlines the process of finding, installing, removing, and upgrading packa
   paxs --check-update
   ```
 
-- **Upgrade all packages across Yay, Flatpak, and Snap:**
+- 🔃 **Upgrade all packages across Yay, Flatpak, and Snap:**
   ```bash
   paxs -u
   ```
@@ -112,7 +112,7 @@ It streamlines the process of finding, installing, removing, and upgrading packa
   paxs --upgrade-snap
   ```
 
-- **Display the help manual:**
+- ℹ️ **Display the help manual:**
   ```bash
   paxs -h
   ```
